@@ -21,39 +21,74 @@
 	</head>
 
 	<body>
+		<div class="navmenu navmenu-default navmenu-fixed-left">
+			<a class="navmenu-brand" href="#">Menu</a>
+			<ul class="nav navmenu-nav">
+				<li><a href="#">New Game</a></li>
+				<li><a href="#">Quit</a></li>
+			</ul>
+		</div>
 
-  
+		<div class="canvas">
+			<header>
+				<div class="navbar navbar-default navbar-fixed-top">
+					<button type="button" class="navbar-toggle" data-toggle="offcanvas" data-recalc="false" data-target=".navmenu" data-canvas=".canvas">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<div class="pull-left">
+						<h2 style="margin-top: 8px;margin-right:10px;"><b>Bowlr</b></h2>
+					</div>
+				</div>
+			</header>
+			<div class="container">
+				<div class="lead text-center">
+					<h1><b>Bowlr - A Bowling Scorekeeper</b></h1>
+					<button class="btn btn-large btn-primary">New Game</button>
+					<button class="btn btn-large btn-default">Quit</button>
+				</div>
+			</div><!-- /.container -->
+			<footer>
+			</footer>
+		</div><!-- /.canvas -->
+  	
+		<script src="lib/jquery/jquery-2.1.3.js"></script>
+		<script src="lib/bootstrap/js/bootstrap.min.js"></script>.
+		<script src="lib/jasny-bootstrap/js/jasny-bootstrap.min.js"></script>
+
+		<script src="js/bowlr.js"></script>
+
+		<script>
+
+			// JQUERY
+
+			// IIFE - Immediately Invoked Function Expression
+			(function(bowlr) {
+
+				// The global jQuery object is passed as a parameter
+				bowlr(window.jQuery, window, document);
+
+			}(function($, window, document) {
+
+				///////////////////////////////////////////////////////////
+
+				// Listen for the jQuery ready event on the document
+				$(function() {
+
+					// Initialize the first screens, pre-game!
+					$.bowlr.init({
+
+						// Override any library defaults
+
+
+						// Add any what's new messages or screens
+
+
+					});
+				});
+			}));
+
+		</script>
 	</body>
-	
-	<script src="lib/jquery/jquery-1.11.2.js"></script>
-	<script src="lib/bootstrap/js/bootstrap.min.js"></script>
-
-	<script src="js/bowlr.js"></script>
-
-	<script>
-
-		// JQUERY
-
-		// IIFE - Immediately Invoked Function Expression
-		(function(bowlr) {
-
-			// The global jQuery object is passed as a parameter
-  			bowlr(window.jQuery, window, document);
-
-		}(function($, window, document) {
-
-
-	
-			///////////////////////////////////////////////////////////
-
-			// Listen for the jQuery ready event on the document
-			$(function() {
-
-				// Initialize the first screens, pre-game!
-				$.bowlr.init();	
-
-			});
-		}));
-
-	</script>
 </html>
