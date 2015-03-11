@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title> Bowlr - Bowling Game Scorekeeper </title>
+		<meta name="Author" content="Mike Lightner">
+		<meta name="Description" content="">
+
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+		<link href="//fonts.googleapis.com/css?family=Roboto+Condensed:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
+		<link href="lib/bootstrap/css/bootstrap.css" rel="stylesheet" />
+		<link href="lib/jasny-bootstrap/css/jasny-bootstrap.min.css" rel="stylesheet" />
+
+		<link href="styles/global.css" rel="stylesheet" />
+		<link href="styles/white/screen.css" rel="stylesheet" />
+
+		<link rel="icon" href="/bowlr.ico" type="image/icon" />
+		<link rel="shortcut icon" href="/bowlr.png">
+	</head>
+
+	<body>
+
+  
+	</body>
+	
+	<script src="//code.jquery.com/jquery.js"></script>
+	<script src="lib/bootstrap/js/bootstrap.min.js"></script>
+
+	<script src="js/bowlr.js"></script>
+
+	<script>
+
+		// JQUERY
+
+		// IIFE - Immediately Invoked Function Expression
+		(function(bowlr) {
+
+			// The global jQuery object is passed as a parameter
+  			bowlr(window.jQuery, window, document);
+
+		}(function($, window, document) {
+
+
+	
+			///////////////////////////////////////////////////////////
+
+			// Listen for the jQuery ready event on the document
+			$(function() {
+
+				// Initialize the first screens, pre-game!
+				$.bowlr.init();	
+
+			});
+		}));
+
+	</script>
+</html>
