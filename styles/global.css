@@ -3,6 +3,8 @@ html, body {
   cursor: default;
 }
 
+a.btn:active, button:active, input[type=submit]:active {outline: none 0 !important;}
+a.btn:focus, button:focus, input[type=submit]:focus {outline: none 0 !important;}
 
 .canvas {
   position: relative;
