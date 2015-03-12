@@ -2,3 +2,29 @@
 body {
 	font-family: 'Roboto Condensed', arial, helvetica, sans-serif;
 }
+
+
+.navbar h2 {
+	font-weight: bold;
+}
+
+
+/**** TITLE SCREEN - MAY BE MOVED TO SEPARATE CSS! ****/
+img.title-image {
+	width:100%;
+	max-width:120px;
+	max-height: 120px;
+}
+
+
+
+/**********************************************/
+
+
+@media (min-height: 512px) {
+	img.title-image {
+		max-height: 250px;
+		max-width: 250px;
+	}
+}
+
