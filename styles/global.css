@@ -8,8 +8,17 @@ html {
 }
 
 body {
-	padding: 60px 0 0 0;
 	margin-bottom: 32px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+body.loading {
+	background: transparent url(../assets/loadingbar.gif) no-repeat scroll center center;
 }
 
 a:active, button:active, input[type=submit]:active {outline: none 0 !important;}
@@ -17,15 +26,28 @@ a:focus, button:focus, input[type=submit]:focus {outline: none 0 !important;}
 
 
 .navmenu {
-  box-shadow: 2px 0 4px rgba(0,0,0,0.25);
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
-.navmenu-brand {
-	font-size: 20px;
-	border-bottom: 1px solid #999;
+
+.navmenu-brand img {
+	height: 48px;
+	display:inline-block;
+	margin-right: 10px;
 }
 
 .navmenu-nav {
 	font-size: 18px;
+}
+
+.navmenu-nav .divider {
+    height: 1px;
+    margin: 9px 0;
+    overflow: hidden;
 }
 
 .navbar {
@@ -43,18 +65,8 @@ a:focus, button:focus, input[type=submit]:focus {outline: none 0 !important;}
 	height: 4px;
 }
 
-.navmenu-default .navmenu-nav > li > a:hover, 
-.navbar-default .navbar-offcanvas .navmenu-nav > li > a:hover,
-.navmenu-default .navmenu-nav > li > a:focus,
-.navbar-default .navbar-offcanvas .navmenu-nav > li > a:focus {
-	background-color: #777;
-	color: #EEE;
-}
-
-.navmenu-default .navmenu-nav > li > a:active,
-.navbar-default .navbar-offcanvas .navmenu-nav > li > a:active {
-	background-color: #333;
-	color: #FFF;
+.navmenu-nav li a i {
+	padding-top: 4px;
 }
 
 .container {
@@ -67,21 +79,29 @@ a:focus, button:focus, input[type=submit]:focus {outline: none 0 !important;}
 	margin-right:10px;
 }
 
-.footer {
+
+
+
+footer {
   position: absolute;
   bottom: 0;
   width: 100%;
   /* Set the fixed height of the footer here */
-  height: 32px;
-  background-color: #f5f5f5;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
-.footer .container {
+footer .container {
   width: auto;
   max-width: 680px;
   padding: 0 15px;
 }
-.footer .container .text-muted {
+
+footer .container .text-muted {
   margin: 6px 0;
 }
 
@@ -89,9 +109,7 @@ a:focus, button:focus, input[type=submit]:focus {outline: none 0 !important;}
 
 
 @media (min-width: 0) {
-	.navbar-toggle {
-		display: block; /* force showing the toggle */
-	}
+	.navbar-toggle {display:block;}
 
 	.navbar-default {
 		background: transparent;
@@ -100,12 +118,6 @@ a:focus, button:focus, input[type=submit]:focus {outline: none 0 !important;}
 	  
 	.navmenu, .navbar-offcanvas {
 		width: 240px;
-	}
-}
-
-@media (min-width: 481px) {
-	body {
-		padding: 20px 0 0 0;
 	}
 }
 
