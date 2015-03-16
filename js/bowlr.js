@@ -1,8 +1,14 @@
+if (!Array.prototype.remove) {
+  Array.prototype.remove = function(val) {
+    var i = this.indexOf(val);
+         return i>-1 ? this.splice(i, 1) : [];
+  };
+}
 !(function($) {
 	"use strict";
 	$.extend({
 
-		enterFullscreen: function() {
+		 enterFullscreen: function() {
 			var ele = document.documentElement;
 
 			bl.log("Warning: Entering fullscreen mode");
@@ -41,6 +47,25 @@
 				console.log('Fullscreen API is not supported.');
 			}
 		}
+
+		,toggleFullscreen: function() {
+			var fullscreenEnabled = document.fullscreenEnabled || document.mozFullScreenEnabled || document.webkitFullscreenEnabled;
+			var isFullscreen = false;
+
+			if (!fullscreenEnabled){
+				window.alert('Your browser cannot go into full screen mode.');
+			} else {
+
+				isFullscreen = ((document.fullscreenElement && document.fullscreenElement !== null) ||    // alternative standard methods
+				document.mozFullScreen || document.webkitIsFullScreen);
+
+				if (!isFullscreen) {
+					$.enterFullscreen();
+				} else {
+					$.exitFullscreen();
+				}
+			}
+		}
 	});
 
 	$.extend({
@@ -49,15 +74,17 @@
 			var bl = this;
 			var currentScreen = null;
 			var screensInDom = [];
+			var modalsInDom = [];
 
 			bl.version = "1.0.0";
 			bl.inGame = false;
+			bl.isFullscreen = false;
 			bl.debug = false;
 			bl.prefix = 'app-';
 
 			bl.config = {
 				 debug: false
-				,prefix: 'bowlr'
+				,prefix: 'bowlr-'
 			};
 
 			bl.screens = {
@@ -81,7 +108,6 @@
 					}
 
 					,animateOut: function() {
-						console.log(this);
 						$('#'+(bl.prefix)+this.id).delay(100).fadeOut(500);
 
 					}
@@ -90,13 +116,45 @@
 
 			bl.modals = {
 				numberOfPlayers: {
+					 id: 'modal-numplayers'
+					,title: 'How Many Players?'
+					,content: ''
+						+'<div class="modal-dialog">'
+						+'	<div class="modal-content">'
+						+'		<div class="modal-header">'
+						+'			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
+						+'			<h4 class="modal-title" id="myModalLabel"></h4>'
+						+'		</div>'
+						+'		<div class="modal-body">'
+						+'			<select class="form-control modal-select">'
+						+'				<option value="">Players...</option>'
+						+'				<option value="1">One</option>'
+						+'				<option value="2">Two</option>'
+						+'				<option value="3">Three</option>'
+						+'				<option value="4">Four</option>'
+						+'				<option value="5">Five</option>'
+						+'				<option value="6">Six</option>'
+						+'				<option value="7">Seven</option>'
+						+'				<option value="8">Eight</option>'
+						+'				<option value="9">Nine</option>'
+						+'				<option value="10">Ten</option>'
+						+'			</select>'
+						+'		</div>'
+						+'		<div class="modal-footer">'
+						+'			<button type="button" class="btn btn-primary">NEXT: Enter Names</button>'
+						+'		</div>'
+						+'	</div>'
+						+'</div>'
 
+					,binds: [
+						
+					]
 				}
 			}
 
 			/* private functions */
 
-			function addMenuItem(menuItem) {
+			function insertMenuItem(menuItem) {
 
 			};
 
@@ -109,17 +167,19 @@
 				var menuItem = this;
 				var func = menuItem.dataset['execute'];
 
-				if (typeof window.bowlr[func] == 'function')
+				if (typeof window.bowlr[func] == 'function' ||
+					typeof window.jQuery[func] == 'function' ||
+					typeof window[func] == 'function')
 				{
+					var exec = window.bowlr[func] || window.jQuery[func] || window[func];
 					bl.log("Executing "+func);
-					var exec = window.bowlr[func];
 					exec();
 
 				} else {
 					bl.log("Error: unable to find function "+func+" to execute");
 				}
 
-				$('#bowlr-menu').offcanvas('hide');
+				$('#'+(bl.prefix)+'menu').offcanvas('hide');
 			}
 
 			function buildMenu(menu) {
@@ -156,7 +216,14 @@
 					+'	</button>'
 					+'</div>'
 				);
-				
+
+				$('#'+(bl.prefix)+'menu').on('show.bs.offcanvas',function(e){
+					$(document.body).addClass('menu-open');
+				});
+				$('#'+(bl.prefix)+'menu').on('hide.bs.offcanvas',function(e){
+					$(document.body).removeClass('menu-open');
+				});
+								
 				// Bind the menu function delegator to every menu item
 				$('#'+(bl.prefix)+'menu .navmenu-nav a').on('click',menuFunc);
 			};
@@ -167,9 +234,11 @@
 
 				if ($.inArray(scrn,screensInDom) == -1) {
 					bl.log("Creating screen "+(screen.id)+"...");
-					var containerElement = $(document.createElement('div'));
+
+					var sid = (bl.prefix)+screen.id;
+					var containerElement = $(document.createElement('section'));
 					
-					containerElement[0].id = (bl.prefix)+screen.id;
+					containerElement[0].id = sid;
 					containerElement.addClass('container');
 					containerElement.addClass('screen');
 					containerElement.addClass(screen.classes);
@@ -177,7 +246,12 @@
 					containerElement.html(screen.content);
 
 					$('#'+(bl.prefix)+'footer').before(containerElement);
-					
+
+					bl.screens[scrn].element = $('#'+sid);
+
+					$('#'+sid+' a').on("click",function(e){this.blur();});
+					$('#'+sid+' button').on("click",function(e){this.blur();});					
+
 					if (screen.binds) {
 						$.each(screen.binds,function(i, b) {
 							if (window.bowlr[b[2]]){
@@ -195,23 +269,95 @@
 			};
 
 			function hideScreen(scrn) {
+				bl.log("Hiding screen "+scrn+"...");
 
 				var screen = bl.screens[scrn];
+
 				screen.animateOut();
 			}
 
 			function destroyScreen(scrn) {
-
+				bl.log("Destroying screen "+scrn+"...");
 				var screen = bl.screens[scrn];
 
-				screen.animateOut();
+				// Safely remove the screen from the DOM
+				// (Is this safe memory-wise?)
 
+				// Need to get animate functions to return a promise so I can animate before destroying
+				//screen.animateOut();
+				screen.element.remove();
+				screen.element = null;
+				screensInDom.remove(scrn);
+			}
 
+			function destroyAllScreens() {
+				bl.log("Destroying all screens...");
+
+			}
+
+			function buildModal(mdl) {
+
+				var m = bl.modals[mdl];
+
+				if ($.inArray(mdl,modalsInDom) == -1) {
+					bl.log("Creating modal "+(m.id)+"...");
+
+					var sid = (bl.prefix)+m.id;
+					var containerElement = $(document.createElement('div')).addClass('modal').addClass('fade');
+					
+					containerElement[0].id = sid;
+					
+					containerElement.html(m.content);
+					$('#'+(bl.prefix)+'header').before(containerElement);
+
+					$('#'+sid+' .modal-title').html(m.title);
+
+					bl.modals[mdl].element = $('#'+sid).modal();
+
+					$('#'+sid+' a').on("click",function(e){this.blur();});
+					$('#'+sid+' button').on("click",function(e){this.blur();});					
+
+					if (m.binds) {
+						$.each(m.binds,function(i, b) {
+							if (window.bowlr[b[2]]){
+								$('#'+b[0]).on(b[1],bl[b[2]]);
+							}
+						});
+					}
+				
+					modalsInDom.push(m);
+				}
+			}
+
+			// This may not be necessary, but for completeness sake...
+			function hideModal(mdl) {
+				bl.log("Hiding modal "+mdl+"...");
+
+				var m = bl.modals[mdl];
+
+				m.element.modal('hide');
+			}
+
+			function destroyModal(mdl) {
+				bl.log("Destroying modal "+mdl+"...");
+				var m = bl.modals[mdl];
+
+				m.element.modal('hide');
+				// Safely remove the screen from the DOM
+				// (Is this safe memory-wise?)
+
+				// Can modal return a promise so I can do this after it's done hiding?
+				window.setTimeout(function(){
+					m.element.remove();
+					m.element = null;
+					modalsInDom.remove(mdl);
+				},1000);
 			}
 
 			function newGame(settings) {
 				
 				// Do any additional screen preparations
+
 
 				// Show base scoreboard and bowl button
 				
@@ -231,7 +377,7 @@
 				// Override the defaults
 				$.extend( bl.config, opts.config );
 				bl.debug = bl.config.debug;
-				bl.prefix = bl.config.prefix + '-';
+				bl.prefix = bl.config.prefix;
 
 				window.bowlr = this;
 
@@ -247,26 +393,27 @@
 				// Build the menu (including the menu button widget)
 				buildMenu(opts.menu);
 
-				// Build the title screen
-				buildScreen('titlescreen');
-				
-				// Final initializations
+				// Final global initializations
 				$('a').on("click",function(e){this.blur();});
 				$('button').on("click",function(e){this.blur();});
 
+				// Build the title screen
+				buildScreen('titlescreen');
+
+				$(document.body).removeClass('loading');
+
 				// We are loaded at this point
-				$(document.body).removeClass('loading');				
+				window.setTimeout(function(){
+					$(document.body).addClass('loaded');
+				},1000);
 			};
 
 			// Start the new game with the parameters given
 			bl.prepareNewGame = function() {
 				//$.enterFullscreen();
 
-				// Dump the title screen
-				hideScreen(currentScreen);
-
 				// Ask how many players
-
+				buildModal('numberOfPlayers');
 			}
 			
 			// Round completed, move to the next round
@@ -282,8 +429,19 @@
 
 			};
 
+			bl.restartApp = function() {
+				//$.exitFullscreen();
+
+				bl.inGame = false;
+
+				// Loop back to the start
+				buildScreen('titlescreen');
+			}
+
 			bl.quitApp = function() {
 				//$.exitFullscreen();
+
+				bl.inGame = false;
 
 				// Loop back to the start
 				buildScreen('titlescreen');

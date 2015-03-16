@@ -21,6 +21,11 @@ body.loading {
 	background: transparent url(../assets/loadingbar.gif) no-repeat scroll center center;
 }
 
+body, .modal {padding-right: 0 !important;}
+
+.modal-footer {text-align: center;}
+
+
 a:active, button:active, input[type=submit]:active {outline: none 0 !important;}
 a:focus, button:focus, input[type=submit]:focus {outline: none 0 !important;}
 
@@ -78,8 +83,6 @@ a:focus, button:focus, input[type=submit]:focus {outline: none 0 !important;}
 	margin-top: 8px;
 	margin-right:10px;
 }
-
-
 
 
 footer {

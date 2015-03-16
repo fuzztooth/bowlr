@@ -21,9 +21,7 @@
 
 		<link rel="icon" href="assets/icons/icon-512.png" type="image/png" />
 		<link rel="shortcut icon" href="assets/icons/icon-512.png" />
-	</head>
 
-	<body class="loading">
 		<script src="lib/jquery/jquery-2.1.3.js"></script>
 		<script src="lib/bootstrap/js/bootstrap.min.js"></script>
 		<script src="lib/jasny-bootstrap/js/jasny-bootstrap.min.js"></script>
@@ -39,15 +37,16 @@
 
 			}(function($, window, document) {
 
-				// Is there anything we want to do before the dom is ready?
+				// Is there anything we want to do before the DOM is ready?
+
+				var today = new Date();
 
 				///////////////////////////////////////////////////////////
 
 				// Listen for the jQuery ready event on the document
 				$(function() {
-
 					// Initialize the game app, pass in the default menu and config
-					// TODO: Should the menu be part of an extend that occurs before the dom is ready?
+					// TODO: Should the menu be part of an extend that occurs before the DOM is ready?
 					$.bowlr.init({
 						menu: {
 							config: {
@@ -60,7 +59,8 @@
 								 ['New Game','new-window','prepareNewGame']
 								,['-']
 								,['Mute Audio','volume-off','toggleAudio']
-								,['Quit','new-window','quitApp']
+								,['Full Screen Mode','remove','toggleFullscreen']
+								,['Quit','off','restartApp']
 							]
 						}
 
@@ -71,17 +71,17 @@
 
 						}
 
-						,footerText: '&copy; '+(new Date).getFullYear()+' fuzztooth :: Licensed under the GPL (3.0)'
+						,footerText: '&copy; '+today.getFullYear()+' fuzztooth :: Licensed under the GPL (3.0)'
 
 						// Add any what's new messages or screens
 						,msgs: {
 
 						}
 					});
-					
 				});
 			}));
 
 		</script>
-	</body>
+	</head>
+	<body class="loading"></body>
 </html>

@@ -1,6 +1,8 @@
 
 body {
 	font-family: 'Roboto Condensed', arial, helvetica, sans-serif;
+	-webkit-transform: translateZ(0);
+	-moz-transform: translateZ(0);
 }
 
 .navmenu {
@@ -37,12 +39,76 @@ body {
 	font-weight: bold;
 }
 
+.loaded section, .loaded footer, 
+.loaded footer .container {
+
+	transition: all 0.25s ease;
+	-webkit-transition: all 0.25s ease;
+	-moz-transition: all 0.25s ease;
+	-ms-transition: all 0.25s ease;
+  filter: blur(0px) grayscale(0%);
+  -webkit-filter: blur(0px) grayscale(0%);
+  -moz-filter: blur(0px) grayscale(0%);
+  -ms-filter: blur(0px) grayscale(0%);
+}
+
 footer {
 	height: 32px;
 	background-color: #f5f5f5;
 	border-top: 1px solid #BBB;
 }
 
+.modal {
+	transition: all 0.25s ease;
+	-webkit-transition: all 0.25s ease;
+	-moz-transition: all 0.25s ease;
+	-ms-transition: all 0.25s ease;
+/* Embiggen 
+	transform: scale(1.5);
+	-webkit-transform: scale(1.5);
+	-moz-transform: scale(1.5);
+	-ms-transform: scale(1.5);*/
+}
+
+.modal-open footer, 
+.menu-open footer {
+	transition: all 0.25s ease; /* prefix me */
+	-webkit-transition: all 0.25s ease;
+	-moz-transition: all 0.25s ease;
+	-ms-transition: all 0.25s ease;
+  /* Blur and de-color */
+  filter: blur(5px) grayscale(50%);
+  -webkit-filter: blur(5px) grayscale(50%);
+  -moz-filter: blur(5px) grayscale(50%);
+  -ms-filter: blur(5px) grayscale(50%);
+}
+
+.modal-open section,
+.modal-open footer .container,
+.menu-open section,
+.menu-open footer .container {
+  /* Blur and de-color */
+  filter: blur(5px) grayscale(50%);
+  -webkit-filter: blur(5px) grayscale(50%);
+  -moz-filter: blur(5px) grayscale(50%);
+  -ms-filter: blur(5px) grayscale(50%);
+
+  /* Recede */
+  transform: scale(0.9);
+  -webkit-transform: scale(0.9);
+  -moz-transform: scale(0.9);
+  -ms-transform: scale(0.9);
+}
+
+
+.modal-open .modal {
+  
+  /* Regular size and visible
+  transform: scale(1);
+  -webkit-transform: scale(1);
+  -moz-transform: scale(1);
+  -ms-transform: scale(1); */
+}
 
 /******************************************************/
 /**** TITLE SCREEN - MAY BE MOVED TO SEPARATE CSS! ****/
@@ -59,6 +125,7 @@ body {
 	font-weight: bold;
 	margin-top: 0;
 	margin-bottom: 20px;
+	letter-spacing: -0.035em;
 }
 
 .title-screen .btn {
