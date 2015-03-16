@@ -1,73 +1,7 @@
-if (!Array.prototype.remove) {
-  Array.prototype.remove = function(val) {
-    var i = this.indexOf(val);
-         return i>-1 ? this.splice(i, 1) : [];
-  };
-}
 !(function($) {
 	"use strict";
-	$.extend({
 
-		 enterFullscreen: function() {
-			var ele = document.documentElement;
-
-			bl.log("Warning: Entering fullscreen mode");
-
-			if (ele.requestFullscreen) {
-				ele.requestFullscreen();
-			} else if (ele.webkitRequestFullscreen) {
-				ele.webkitRequestFullscreen();
-			} else if (ele.mozRequestFullScreen) {
-				ele.mozRequestFullScreen();
-			} else if (ele.msRequestFullscreen) {
-				ele.msRequestFullscreen();
-			} else {
-				// Fallback
-				bl.log('Fullscreen API is not supported.');
-				return false;
-			}
-
-			return true;
-		}
-
-		,exitFullscreen: function() {
-
-			bl.log("Warning: Leaving fullscreen mode");
-
-			if (document.exitFullscreen) {
-				document.exitFullscreen();
-			} else if (document.webkitExitFullscreen) {
-				document.webkitExitFullscreen();
-			} else if (document.mozCancelFullScreen) {
-				document.mozCancelFullScreen();
-			} else if (document.msExitFullscreen) {
-				document.msExitFullscreen();
-			} else {
-				// Fallback
-				console.log('Fullscreen API is not supported.');
-			}
-		}
-
-		,toggleFullscreen: function() {
-			var fullscreenEnabled = document.fullscreenEnabled || document.mozFullScreenEnabled || document.webkitFullscreenEnabled;
-			var isFullscreen = false;
-
-			if (!fullscreenEnabled){
-				window.alert('Your browser cannot go into full screen mode.');
-			} else {
-
-				isFullscreen = ((document.fullscreenElement && document.fullscreenElement !== null) ||    // alternative standard methods
-				document.mozFullScreen || document.webkitIsFullScreen);
-
-				if (!isFullscreen) {
-					$.enterFullscreen();
-				} else {
-					$.exitFullscreen();
-				}
-			}
-		}
-	});
-
+	// Main Application
 	$.extend({
 		bowlr: new function() {
 
@@ -78,7 +12,6 @@ if (!Array.prototype.remove) {
 
 			bl.version = "1.0.0";
 			bl.inGame = false;
-			bl.isFullscreen = false;
 			bl.debug = false;
 			bl.prefix = 'app-';
 
@@ -119,13 +52,6 @@ if (!Array.prototype.remove) {
 					 id: 'modal-numplayers'
 					,title: 'How Many Players?'
 					,content: ''
-						+'<div class="modal-dialog">'
-						+'	<div class="modal-content">'
-						+'		<div class="modal-header">'
-						+'			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
-						+'			<h4 class="modal-title" id="myModalLabel"></h4>'
-						+'		</div>'
-						+'		<div class="modal-body">'
 						+'			<select class="form-control modal-select">'
 						+'				<option value="">Players...</option>'
 						+'				<option value="1">One</option>'
@@ -139,12 +65,6 @@ if (!Array.prototype.remove) {
 						+'				<option value="9">Nine</option>'
 						+'				<option value="10">Ten</option>'
 						+'			</select>'
-						+'		</div>'
-						+'		<div class="modal-footer">'
-						+'			<button type="button" class="btn btn-primary">NEXT: Enter Names</button>'
-						+'		</div>'
-						+'	</div>'
-						+'</div>'
 
 					,binds: [
 						
@@ -236,14 +156,13 @@ if (!Array.prototype.remove) {
 					bl.log("Creating screen "+(screen.id)+"...");
 
 					var sid = (bl.prefix)+screen.id;
-					var containerElement = $(document.createElement('section'));
-					
+					var containerElement = $(document.createElement('section'))
+						.addClass('container')
+						.addClass('screen')
+						.addClass(screen.classes)
+						.html(screen.content);
+
 					containerElement[0].id = sid;
-					containerElement.addClass('container');
-					containerElement.addClass('screen');
-					containerElement.addClass(screen.classes);
-					
-					containerElement.html(screen.content);
 
 					$('#'+(bl.prefix)+'footer').before(containerElement);
 
@@ -284,10 +203,12 @@ if (!Array.prototype.remove) {
 				// (Is this safe memory-wise?)
 
 				// Need to get animate functions to return a promise so I can animate before destroying
-				//screen.animateOut();
-				screen.element.remove();
-				screen.element = null;
-				screensInDom.remove(scrn);
+				screen.animateOut();
+				window.setTimeout(function(){
+					screen.element.remove();
+					screen.element = null;
+					screensInDom.remove(scrn);
+				},2000);
 			}
 
 			function destroyAllScreens() {
@@ -301,13 +222,33 @@ if (!Array.prototype.remove) {
 
 				if ($.inArray(mdl,modalsInDom) == -1) {
 					bl.log("Creating modal "+(m.id)+"...");
-
+					
+					var mBody = '';
 					var sid = (bl.prefix)+m.id;
-					var containerElement = $(document.createElement('div')).addClass('modal').addClass('fade');
+					var containerElement = $(document.createElement('div'))
+						.addClass('modal')
+						.addClass('fade');
+
+					mBody += ''
+						+'<div class="modal-dialog">'
+						+'	<div class="modal-content">'
+						+'		<div class="modal-header">'
+						+'			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
+						+'			<h4 class="modal-title" id="myModalLabel"></h4>'
+						+'		</div>'
+						+'		<div class="modal-body">'
+						+			m.content
+						+'		</div>'
+						+'		<div class="modal-footer">'
+						+'			<button type="button" class="btn btn-primary">NEXT: Enter Names</button>'
+						+'		</div>'
+						+'	</div>'
+						+'</div>';
+					
+					containerElement.html(mBody);
 					
 					containerElement[0].id = sid;
-					
-					containerElement.html(m.content);
+
 					$('#'+(bl.prefix)+'header').before(containerElement);
 
 					$('#'+sid+' .modal-title').html(m.title);
@@ -351,7 +292,7 @@ if (!Array.prototype.remove) {
 					m.element.remove();
 					m.element = null;
 					modalsInDom.remove(mdl);
-				},1000);
+				},2000);
 			}
 
 			function newGame(settings) {
@@ -378,17 +319,33 @@ if (!Array.prototype.remove) {
 				$.extend( bl.config, opts.config );
 				bl.debug = bl.config.debug;
 				bl.prefix = bl.config.prefix;
-
+				
+				// Add the game session object to the window
 				window.bowlr = this;
 
 				// Build the structure
 				
 				bl.log("Building structure...");
 
-				$(document.body).prepend(''
-					+'<header id="'+(bl.prefix)+'header"></header>'
-					+'<footer id="'+(bl.prefix)+'footer"><div class="container text-center"><p class="text-muted">'+(opts.footerText)+'</p></div></footer>'
+				var docBody = $(document.createDocumentFragment());
+				var docHeader = document.createElement('header');
+				var docFooter = document.createElement('footer');
+					docHeader.id = (bl.prefix)+'header';
+					docFooter.id = (bl.prefix)+'footer';
+				
+				$(docFooter).append($(document.createElement('div'))
+							.addClass('container')
+							.addClass('text-center')
+							.append($(document.createElement('p'))
+								.addClass('text-muted')
+								.html(opts.footerText)
+							)
 				);
+
+				docBody.append(docHeader)
+					   .append(docFooter);
+
+				$(document.body).append(docBody);
 
 				// Build the menu (including the menu button widget)
 				buildMenu(opts.menu);
@@ -405,7 +362,7 @@ if (!Array.prototype.remove) {
 				// We are loaded at this point
 				window.setTimeout(function(){
 					$(document.body).addClass('loaded');
-				},1000);
+				},1500);
 			};
 
 			// Start the new game with the parameters given
